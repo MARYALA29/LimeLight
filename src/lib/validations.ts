@@ -66,6 +66,22 @@ export const addMemberSchema = z.object({
   role: z.enum(["ADMIN", "MEMBER"]).optional(),
 });
 
+// Profile validations
+export const updateProfileSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, "Name must be at least 2 characters")
+      .max(100, "Name too long"),
+    avatarUrl: z
+      .string()
+      .url("Invalid URL")
+      .or(z.literal(""))
+      .optional()
+      .nullable(),
+  })
+  .strip();
+
 // Type exports
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
@@ -77,3 +93,4 @@ export type MoveTaskInput = z.infer<typeof moveTaskSchema>;
 export type CreateStatusInput = z.infer<typeof createStatusSchema>;
 export type UpdateStatusInput = z.infer<typeof updateStatusSchema>;
 export type AddMemberInput = z.infer<typeof addMemberSchema>;
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

@@ -1,12 +1,13 @@
-import { Priority, Role } from "@prisma/client";
+import { Priority, Role, SystemRole } from "@prisma/client";
 
-export type { Priority, Role };
+export type { Priority, Role, SystemRole };
 
 export interface User {
   id: string;
   email: string;
   name: string;
   avatarUrl: string | null;
+  role: SystemRole;
   createdAt: Date;
 }
 

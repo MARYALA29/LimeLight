@@ -1,4 +1,4 @@
-import { PrismaClient, Role, Priority } from "@prisma/client";
+import { PrismaClient, Role, Priority, SystemRole } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -11,14 +11,25 @@ async function main() {
   await prisma.project.deleteMany();
   await prisma.user.deleteMany();
 
-  // Create demo user
+  // Create demo users
   const hashedPassword = await bcrypt.hash("password123", 10);
+  const adminPassword = await bcrypt.hash("admin123", 10);
+
+  const admin = await prisma.user.create({
+    data: {
+      email: "admin@limelight.com",
+      password: adminPassword,
+      name: "Admin User",
+      role: SystemRole.ADMIN,
+    },
+  });
 
   const user = await prisma.user.create({
     data: {
       email: "demo@example.com",
       password: hashedPassword,
       name: "Demo User",
+      role: SystemRole.USER,
     },
   });
 
@@ -27,6 +38,7 @@ async function main() {
       email: "jane@example.com",
       password: hashedPassword,
       name: "Jane Smith",
+      role: SystemRole.USER,
     },
   });
 
@@ -40,6 +52,14 @@ async function main() {
   });
 
   // Add users to project
+  await prisma.projectMember.create({
+    data: {
+      userId: admin.id,
+      projectId: project.id,
+      role: Role.ADMIN,
+    },
+  });
+
   await prisma.projectMember.create({
     data: {
       userId: user.id,
@@ -152,6 +172,11 @@ async function main() {
   });
 
   console.log("Seed data created successfully!");
+  console.log("");
+  console.log("Admin credentials:");
+  console.log("  Email: admin@limelight.com");
+  console.log("  Password: admin123");
+  console.log("");
   console.log("Demo user credentials:");
   console.log("  Email: demo@example.com");
   console.log("  Password: password123");

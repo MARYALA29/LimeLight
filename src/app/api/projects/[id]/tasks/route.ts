@@ -26,8 +26,8 @@ export async function GET(
     const tasks = await prisma.task.findMany({
       where: { projectId: id },
       include: {
-        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
-        creator: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
+        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
+        creator: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
         status: true,
       },
       orderBy: [{ status: { order: "asc" } }, { order: "asc" }],
@@ -101,8 +101,8 @@ export async function POST(
         assigneeId: validation.data.assigneeId,
       },
       include: {
-        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
-        creator: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
+        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
+        creator: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
         status: true,
       },
     });

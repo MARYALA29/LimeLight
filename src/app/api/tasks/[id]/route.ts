@@ -18,8 +18,8 @@ export async function GET(
     const task = await prisma.task.findUnique({
       where: { id },
       include: {
-        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
-        creator: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
+        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
+        creator: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
         status: true,
         project: { include: { members: { where: { userId: user.id } } } },
       },
@@ -67,8 +67,8 @@ export async function PATCH(
       where: { id },
       data: validation.data,
       include: {
-        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
-        creator: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
+        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
+        creator: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
         status: true,
       },
     });

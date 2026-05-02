@@ -22,7 +22,7 @@ export async function GET(
       },
       include: {
         members: {
-          include: { user: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } } },
+          include: { user: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } } },
         },
         statuses: { orderBy: { order: "asc" } },
         _count: { select: { tasks: true } },

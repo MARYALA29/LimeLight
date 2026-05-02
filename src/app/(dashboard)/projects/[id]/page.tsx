@@ -19,7 +19,7 @@ export default async function ProjectPage({
     include: {
       members: {
         include: {
-          user: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
+          user: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
         },
       },
       statuses: { orderBy: { order: "asc" } },
@@ -33,8 +33,8 @@ export default async function ProjectPage({
   const tasks = await prisma.task.findMany({
     where: { projectId: id },
     include: {
-      assignee: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
-      creator: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
+      assignee: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
+      creator: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
       status: true,
     },
     orderBy: { order: "asc" },

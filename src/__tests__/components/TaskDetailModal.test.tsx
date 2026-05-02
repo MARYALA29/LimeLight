@@ -58,6 +58,7 @@ const mockTask: Task = {
     email: "assignee@test.com",
     name: "John Doe",
     avatarUrl: null,
+    role: "USER",
     createdAt: new Date(),
   },
   creator: {
@@ -65,6 +66,7 @@ const mockTask: Task = {
     email: "creator@test.com",
     name: "Jane Smith",
     avatarUrl: null,
+    role: "USER",
     createdAt: new Date(),
   },
   status: {
@@ -81,8 +83,8 @@ const mockStatuses: Status[] = [
 ];
 
 const mockMembers: User[] = [
-  { id: "user-123", email: "assignee@test.com", name: "John Doe", avatarUrl: null, createdAt: new Date() },
-  { id: "user-456", email: "creator@test.com", name: "Jane Smith", avatarUrl: null, createdAt: new Date() },
+  { id: "user-123", email: "assignee@test.com", name: "John Doe", avatarUrl: null, role: "USER", createdAt: new Date() },
+  { id: "user-456", email: "creator@test.com", name: "Jane Smith", avatarUrl: null, role: "USER", createdAt: new Date() },
 ];
 
 describe("TaskDetailModal", () => {

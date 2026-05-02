@@ -80,8 +80,8 @@ export async function PATCH(
       where: { id },
       data: { statusId, order },
       include: {
-        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
-        creator: { select: { id: true, email: true, name: true, avatarUrl: true, createdAt: true } },
+        assignee: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
+        creator: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
         status: true,
       },
     });
