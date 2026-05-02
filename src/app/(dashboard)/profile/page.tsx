@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { updateProfileSchema, UpdateProfileInput } from "@/lib/validations";
+import {
+  updateProfileSchema,
+  UpdateProfileInput,
+  changePasswordSchema,
+  ChangePasswordInput,
+} from "@/lib/validations";
 import { Avatar, Badge, Button, Input } from "@/components/ui";
 import { User } from "@/types";
 import { formatDate } from "@/lib/utils";
@@ -15,6 +20,9 @@ export default function ProfilePage() {
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const {
     register,
@@ -23,6 +31,15 @@ export default function ProfilePage() {
     reset,
   } = useForm<UpdateProfileInput>({
     resolver: zodResolver(updateProfileSchema),
+  });
+
+  const {
+    register: registerPassword,
+    handleSubmit: handleSubmitPassword,
+    formState: { errors: passwordErrors },
+    reset: resetPassword,
+  } = useForm<ChangePasswordInput>({
+    resolver: zodResolver(changePasswordSchema),
   });
 
   useEffect(() => {
@@ -72,6 +89,38 @@ export default function ProfilePage() {
       setError("An error occurred. Please try again.");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const onSubmitPassword = async (data: ChangePasswordInput) => {
+    setIsChangingPassword(true);
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    try {
+      const res = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        setPasswordError(result.error || "Failed to change password");
+        return;
+      }
+
+      setPasswordSuccess("Password changed successfully");
+      resetPassword({
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      });
+    } catch {
+      setPasswordError("An error occurred. Please try again.");
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -195,6 +244,64 @@ export default function ProfilePage() {
             </div>
           </form>
         </div>
+      </div>
+
+      {/* Change password */}
+      <div className="bg-white rounded-2xl border border-orange-100 shadow-sm mt-6">
+        <div className="border-b border-orange-100 px-8 py-6">
+          <h2 className="text-xl font-bold text-gray-900">Change Password</h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Use a strong password — at least 6 characters and different from your
+            current one.
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleSubmitPassword(onSubmitPassword)}
+          className="p-8 space-y-4"
+        >
+          {passwordError && (
+            <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-600">
+              {passwordError}
+            </div>
+          )}
+          {passwordSuccess && (
+            <div className="rounded-xl bg-green-50 border border-green-200 p-3 text-sm text-green-700">
+              {passwordSuccess}
+            </div>
+          )}
+
+          <Input
+            id="currentPassword"
+            type="password"
+            label="Current Password"
+            autoComplete="current-password"
+            error={passwordErrors.currentPassword?.message}
+            {...registerPassword("currentPassword")}
+          />
+          <Input
+            id="newPassword"
+            type="password"
+            label="New Password"
+            autoComplete="new-password"
+            error={passwordErrors.newPassword?.message}
+            {...registerPassword("newPassword")}
+          />
+          <Input
+            id="confirmNewPassword"
+            type="password"
+            label="Confirm New Password"
+            autoComplete="new-password"
+            error={passwordErrors.confirmNewPassword?.message}
+            {...registerPassword("confirmNewPassword")}
+          />
+
+          <div className="flex justify-end pt-2">
+            <Button type="submit" isLoading={isChangingPassword}>
+              Change Password
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );

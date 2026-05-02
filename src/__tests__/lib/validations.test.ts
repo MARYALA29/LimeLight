@@ -1,4 +1,9 @@
-import { updateProfileSchema, addMemberSchema, updateMemberSchema } from "@/lib/validations";
+import {
+  updateProfileSchema,
+  addMemberSchema,
+  updateMemberSchema,
+  changePasswordSchema,
+} from "@/lib/validations";
 
 describe("updateProfileSchema", () => {
   it("accepts a valid name", () => {
@@ -88,5 +93,56 @@ describe("updateMemberSchema", () => {
 
   it("rejects missing role", () => {
     expect(updateMemberSchema.safeParse({}).success).toBe(false);
+  });
+});
+
+describe("changePasswordSchema", () => {
+  const validInput = {
+    currentPassword: "oldpassword",
+    newPassword: "newpassword123",
+    confirmNewPassword: "newpassword123",
+  };
+
+  it("accepts valid input where new password matches confirmation", () => {
+    expect(changePasswordSchema.safeParse(validInput).success).toBe(true);
+  });
+
+  it("rejects when new password is shorter than 6 characters", () => {
+    expect(
+      changePasswordSchema.safeParse({
+        ...validInput,
+        newPassword: "short",
+        confirmNewPassword: "short",
+      }).success
+    ).toBe(false);
+  });
+
+  it("rejects when confirmation does not match new password", () => {
+    expect(
+      changePasswordSchema.safeParse({
+        ...validInput,
+        confirmNewPassword: "different-password",
+      }).success
+    ).toBe(false);
+  });
+
+  it("rejects when new password equals current password", () => {
+    expect(
+      changePasswordSchema.safeParse({
+        currentPassword: "samepassword",
+        newPassword: "samepassword",
+        confirmNewPassword: "samepassword",
+      }).success
+    ).toBe(false);
+  });
+
+  it("rejects empty current password", () => {
+    expect(
+      changePasswordSchema.safeParse({ ...validInput, currentPassword: "" }).success
+    ).toBe(false);
+  });
+
+  it("rejects missing fields", () => {
+    expect(changePasswordSchema.safeParse({}).success).toBe(false);
   });
 });
