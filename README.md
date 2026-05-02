@@ -1,36 +1,226 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LimeLight
+
+A modern task management application inspired by Jira, built with Next.js 14 and PostgreSQL.
+
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)
+![Prisma](https://img.shields.io/badge/Prisma-5.20-2D3748)
+
+## Features
+
+- **Authentication**: Secure JWT-based authentication with HTTP-only cookies
+- **Project Management**: Create and manage multiple projects
+- **Kanban Board**: Drag-and-drop task management with customizable columns
+- **Task Management**: Create, edit, delete, and move tasks between statuses
+- **Team Collaboration**: Add team members to projects
+- **Priority Levels**: LOW, MEDIUM, HIGH, URGENT task priorities
+- **Responsive Design**: Works on desktop and mobile devices
+
+## Tech Stack
+
+### Frontend
+- **Next.js 14** - React framework with App Router
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **dnd-kit** - Drag and drop functionality
+- **React Hook Form + Zod** - Form handling and validation
+- **TanStack Query** - Server state management
+
+### Backend
+- **Next.js API Routes** - REST API endpoints
+- **Prisma** - Database ORM
+- **PostgreSQL** - Database
+- **bcryptjs** - Password hashing
+- **jose** - JWT token handling
+
+### Testing
+- **Jest** - Test runner
+- **React Testing Library** - Component testing
+
+## Prerequisites
+
+- Node.js 18.17.0 or higher
+- Docker and Docker Compose (for PostgreSQL)
+- npm or yarn
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/MARYALA29/LimeLight.git
+cd LimeLight
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up environment variables
+
+Create a `.env` file in the root directory:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/limelight?schema=public"
+JWT_SECRET="your-super-secret-jwt-key-change-in-production"
+```
+
+### 4. Start PostgreSQL database
+
+```bash
+docker compose up -d
+```
+
+### 5. Set up the database
+
+```bash
+# Push the schema to the database
+npm run db:push
+
+# Seed the database with demo data
+npm run db:seed
+```
+
+### 6. Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Demo Credentials
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+After seeding the database, you can log in with:
 
-## Learn More
+- **Email**: `demo@example.com`
+- **Password**: `password123`
 
-To learn more about Next.js, take a look at the following resources:
+## Available Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run tests |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Run tests with coverage report |
+| `npm run db:generate` | Generate Prisma client |
+| `npm run db:push` | Push schema to database |
+| `npm run db:migrate` | Run database migrations |
+| `npm run db:seed` | Seed the database |
+| `npm run db:studio` | Open Prisma Studio |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Testing
 
-## Deploy on Vercel
+### Run all tests
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm test
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Run tests in watch mode
+
+```bash
+npm run test:watch
+```
+
+### Run tests with coverage
+
+```bash
+npm run test:coverage
+```
+
+### Test Structure
+
+```
+src/__tests__/
+├── components/
+│   ├── Button.test.tsx          # Button component tests
+│   ├── TaskDetailModal.test.tsx # Task modal tests
+│   └── TaskPage.test.tsx        # Task page tests
+```
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── (auth)/                  # Authentication pages
+│   │   ├── login/
+│   │   └── register/
+│   ├── (dashboard)/             # Protected dashboard pages
+│   │   └── projects/
+│   │       ├── [id]/            # Project board view
+│   │       │   └── tasks/[taskId]/  # Task detail page
+│   │       └── new/             # Create project
+│   └── api/                     # API routes
+│       ├── auth/
+│       ├── projects/
+│       └── tasks/
+├── components/
+│   ├── board/                   # Kanban board components
+│   ├── projects/                # Project-related components
+│   ├── tasks/                   # Task-related components
+│   └── ui/                      # Reusable UI components
+├── lib/
+│   ├── auth.ts                  # Authentication utilities
+│   ├── prisma.ts                # Prisma client
+│   ├── utils.ts                 # Helper functions
+│   └── validations.ts           # Zod schemas
+└── types/
+    └── index.ts                 # TypeScript types
+```
+
+## Database Schema
+
+The application uses the following main models:
+
+- **User** - User accounts
+- **Project** - Projects/workspaces
+- **ProjectMember** - Project membership (with roles)
+- **Status** - Task statuses (columns)
+- **Task** - Individual tasks
+
+## API Endpoints
+
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | Login |
+| POST | `/api/auth/logout` | Logout |
+| GET | `/api/auth/me` | Get current user |
+
+### Projects
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/projects` | List user's projects |
+| POST | `/api/projects` | Create project |
+| GET | `/api/projects/[id]` | Get project details |
+| PATCH | `/api/projects/[id]` | Update project |
+| DELETE | `/api/projects/[id]` | Delete project |
+
+### Tasks
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/projects/[id]/tasks` | List project tasks |
+| POST | `/api/projects/[id]/tasks` | Create task |
+| GET | `/api/tasks/[id]` | Get task details |
+| PATCH | `/api/tasks/[id]` | Update task |
+| DELETE | `/api/tasks/[id]` | Delete task |
+| PATCH | `/api/tasks/[id]/move` | Move task (change status/order) |
+
+## License
+
+This project is private and proprietary.
+
+---
+
+Built with Next.js and PostgreSQL
