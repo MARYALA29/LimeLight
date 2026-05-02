@@ -103,6 +103,65 @@ export const changePasswordSchema = z
     path: ["newPassword"],
   });
 
+// Vulnerability validations
+const VULN_SEVERITY = ["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const;
+const VULN_STATUS = [
+  "OPEN",
+  "TRIAGED",
+  "IN_PROGRESS",
+  "PATCHED",
+  "VERIFIED",
+  "WONT_FIX",
+  "DUPLICATE",
+] as const;
+const EXPLOIT_STATUS = ["UNKNOWN", "THEORETICAL", "POC", "IN_THE_WILD"] as const;
+
+// CVE ids look like CVE-YYYY-NNNNN+ (year, 4-digit min sequence). GHSA ids
+// look like GHSA-xxxx-xxxx-xxxx (alphanumeric quartets).
+const CVE_REGEX = /^CVE-\d{4}-\d{4,}$/;
+const GHSA_REGEX = /^GHSA-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}$/;
+
+export const createVulnerabilitySchema = z
+  .object({
+    title: z.string().min(1, "Title is required").max(200, "Title too long"),
+    description: z.string().max(5000, "Description too long").optional(),
+    severity: z.enum(VULN_SEVERITY, {
+      errorMap: () => ({ message: "Severity must be LOW, MEDIUM, HIGH, or CRITICAL" }),
+    }),
+    cveId: z.string().regex(CVE_REGEX, "Invalid CVE id format").optional(),
+    ghsaId: z.string().regex(GHSA_REGEX, "Invalid GHSA id format").optional(),
+    cvssScore: z
+      .number()
+      .min(0, "CVSS score must be at least 0")
+      .max(10, "CVSS score must be at most 10")
+      .optional(),
+    cvssVector: z.string().max(200).optional(),
+    exploitStatus: z.enum(EXPLOIT_STATUS).optional(),
+    affectedComponent: z.string().max(200).optional(),
+    affectedVersions: z.string().max(100).optional(),
+    fixedVersion: z.string().max(100).optional(),
+    assigneeId: z.string().optional().nullable(),
+  })
+  .strip();
+
+export const updateVulnerabilitySchema = z
+  .object({
+    title: z.string().min(1).max(200).optional(),
+    description: z.string().max(5000).optional().nullable(),
+    severity: z.enum(VULN_SEVERITY).optional(),
+    cveId: z.string().regex(CVE_REGEX, "Invalid CVE id format").optional().nullable(),
+    ghsaId: z.string().regex(GHSA_REGEX, "Invalid GHSA id format").optional().nullable(),
+    cvssScore: z.number().min(0).max(10).optional().nullable(),
+    cvssVector: z.string().max(200).optional().nullable(),
+    exploitStatus: z.enum(EXPLOIT_STATUS).optional(),
+    affectedComponent: z.string().max(200).optional().nullable(),
+    affectedVersions: z.string().max(100).optional().nullable(),
+    fixedVersion: z.string().max(100).optional().nullable(),
+    status: z.enum(VULN_STATUS).optional(),
+    assigneeId: z.string().optional().nullable(),
+  })
+  .strip();
+
 // Type exports
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
@@ -117,3 +176,5 @@ export type AddMemberInput = z.infer<typeof addMemberSchema>;
 export type UpdateMemberInput = z.infer<typeof updateMemberSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+export type CreateVulnerabilityInput = z.infer<typeof createVulnerabilitySchema>;
+export type UpdateVulnerabilityInput = z.infer<typeof updateVulnerabilitySchema>;
