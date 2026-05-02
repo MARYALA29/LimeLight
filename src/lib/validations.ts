@@ -88,6 +88,21 @@ export const updateProfileSchema = z
   })
   .strip();
 
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z.string().min(6, "Password must be at least 6 characters"),
+    confirmNewPassword: z.string().min(1, "Please confirm the new password"),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Passwords do not match",
+    path: ["confirmNewPassword"],
+  })
+  .refine((data) => data.newPassword !== data.currentPassword, {
+    message: "New password must be different from current password",
+    path: ["newPassword"],
+  });
+
 // Type exports
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
@@ -101,3 +116,4 @@ export type UpdateStatusInput = z.infer<typeof updateStatusSchema>;
 export type AddMemberInput = z.infer<typeof addMemberSchema>;
 export type UpdateMemberInput = z.infer<typeof updateMemberSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

@@ -156,4 +156,89 @@ describe("ProfilePage", () => {
       expect(screen.getByText(/unable to load profile/i)).toBeInTheDocument();
     });
   });
+
+  it("renders the change password form", async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ user: mockUser }),
+    });
+
+    render(<ProfilePage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/current password/i)).toBeInTheDocument();
+    });
+
+    expect(screen.getByLabelText(/^new password$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/confirm new password/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /change password/i })).toBeInTheDocument();
+  });
+
+  it("submits POST to /api/auth/change-password with the form values", async () => {
+    const user = userEvent.setup();
+
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: mockUser }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true }),
+      });
+
+    render(<ProfilePage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/current password/i)).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText(/current password/i), "oldpw123");
+    await user.type(screen.getByLabelText(/^new password$/i), "newpw456");
+    await user.type(screen.getByLabelText(/confirm new password/i), "newpw456");
+    await user.click(screen.getByRole("button", { name: /change password/i }));
+
+    await waitFor(() => {
+      const calls = (global.fetch as jest.Mock).mock.calls;
+      const passwordCall = calls.find((c) => c[0] === "/api/auth/change-password");
+      expect(passwordCall).toBeDefined();
+    });
+
+    const passwordCall = (global.fetch as jest.Mock).mock.calls.find(
+      (c) => c[0] === "/api/auth/change-password"
+    );
+    expect(passwordCall![1].method).toBe("POST");
+    const body = JSON.parse(passwordCall![1].body);
+    expect(body.currentPassword).toBe("oldpw123");
+    expect(body.newPassword).toBe("newpw456");
+    expect(body.confirmNewPassword).toBe("newpw456");
+  });
+
+  it("shows error when confirmation does not match new password", async () => {
+    const user = userEvent.setup();
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ user: mockUser }),
+    });
+
+    render(<ProfilePage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/current password/i)).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText(/current password/i), "oldpw123");
+    await user.type(screen.getByLabelText(/^new password$/i), "newpw456");
+    await user.type(screen.getByLabelText(/confirm new password/i), "different");
+    await user.click(screen.getByRole("button", { name: /change password/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
+    });
+
+    // Should NOT have called the API
+    const calls = (global.fetch as jest.Mock).mock.calls;
+    expect(calls.find((c) => c[0] === "/api/auth/change-password")).toBeUndefined();
+  });
 });
