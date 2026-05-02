@@ -66,6 +66,12 @@ export const addMemberSchema = z.object({
   role: z.enum(["ADMIN", "MEMBER"]).optional(),
 });
 
+export const updateMemberSchema = z.object({
+  role: z.enum(["ADMIN", "MEMBER"], {
+    errorMap: () => ({ message: "Role must be ADMIN or MEMBER" }),
+  }),
+});
+
 // Profile validations
 export const updateProfileSchema = z
   .object({
@@ -93,4 +99,5 @@ export type MoveTaskInput = z.infer<typeof moveTaskSchema>;
 export type CreateStatusInput = z.infer<typeof createStatusSchema>;
 export type UpdateStatusInput = z.infer<typeof updateStatusSchema>;
 export type AddMemberInput = z.infer<typeof addMemberSchema>;
+export type UpdateMemberInput = z.infer<typeof updateMemberSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

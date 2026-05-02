@@ -1,4 +1,4 @@
-import { updateProfileSchema } from "@/lib/validations";
+import { updateProfileSchema, addMemberSchema, updateMemberSchema } from "@/lib/validations";
 
 describe("updateProfileSchema", () => {
   it("accepts a valid name", () => {
@@ -48,5 +48,45 @@ describe("updateProfileSchema", () => {
     if (result.success) {
       expect("role" in result.data).toBe(false);
     }
+  });
+});
+
+describe("addMemberSchema", () => {
+  it("accepts a valid email", () => {
+    expect(addMemberSchema.safeParse({ email: "user@test.com" }).success).toBe(true);
+  });
+
+  it("accepts a valid email with role", () => {
+    expect(
+      addMemberSchema.safeParse({ email: "user@test.com", role: "ADMIN" }).success
+    ).toBe(true);
+  });
+
+  it("rejects an invalid email", () => {
+    expect(addMemberSchema.safeParse({ email: "not-an-email" }).success).toBe(false);
+  });
+
+  it("rejects an invalid role", () => {
+    expect(
+      addMemberSchema.safeParse({ email: "user@test.com", role: "OWNER" }).success
+    ).toBe(false);
+  });
+});
+
+describe("updateMemberSchema", () => {
+  it("accepts ADMIN role", () => {
+    expect(updateMemberSchema.safeParse({ role: "ADMIN" }).success).toBe(true);
+  });
+
+  it("accepts MEMBER role", () => {
+    expect(updateMemberSchema.safeParse({ role: "MEMBER" }).success).toBe(true);
+  });
+
+  it("rejects invalid role", () => {
+    expect(updateMemberSchema.safeParse({ role: "OWNER" }).success).toBe(false);
+  });
+
+  it("rejects missing role", () => {
+    expect(updateMemberSchema.safeParse({}).success).toBe(false);
   });
 });
