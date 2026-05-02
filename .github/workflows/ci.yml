@@ -47,3 +47,30 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    env:
+      # prisma generate (postinstall) needs DATABASE_URL to be set, but
+      # never connects — a dummy URL is sufficient.
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/limelight_ci
+      JWT_SECRET: ci-secret-not-used-anywhere
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Fail on any high/critical vulnerability that is not explicitly
+      # allowlisted in audit-ci.jsonc. Each allowlisted advisory has a
+      # reason and is tracked for cleanup.
+      - name: Audit dependencies
+        run: npx audit-ci --config audit-ci.jsonc
