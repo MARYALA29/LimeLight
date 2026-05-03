@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { createTaskSchema } from "@/lib/validations";
+import { buildTaskWhere, parseTaskFilters } from "@/lib/task-filters";
 
 export async function GET(
   request: NextRequest,
@@ -23,8 +24,11 @@ export async function GET(
       return NextResponse.json({ error: "Not a member of this project" }, { status: 403 });
     }
 
+    const filters = parseTaskFilters(request.nextUrl.searchParams, user.id);
+    const where = buildTaskWhere(id, filters);
+
     const tasks = await prisma.task.findMany({
-      where: { projectId: id },
+      where,
       include: {
         assignee: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
         creator: { select: { id: true, email: true, name: true, avatarUrl: true, role: true, createdAt: true } },
