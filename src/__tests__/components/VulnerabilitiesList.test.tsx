@@ -234,4 +234,15 @@ describe("VulnerabilitiesList", () => {
     );
     expect(screen.getByText("CVE-2025-1234")).toBeInTheDocument();
   });
+
+  it("links each row to the detail page", () => {
+    const vulns = [vuln({ id: "v-abc" })];
+    render(
+      <VulnerabilitiesList {...baseProps} initialVulnerabilities={vulns} />
+    );
+    expect(screen.getByTestId("vuln-row")).toHaveAttribute(
+      "href",
+      "/projects/p1/vulnerabilities/v-abc"
+    );
+  });
 });
