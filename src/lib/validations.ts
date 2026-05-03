@@ -103,6 +103,16 @@ export const changePasswordSchema = z
     path: ["newPassword"],
   });
 
+// Personal Access Token validations
+export const createPATSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(100, "Name too long")
+    .trim(),
+});
+export type CreatePATInput = z.infer<typeof createPATSchema>;
+
 // Vulnerability validations
 const VULN_SEVERITY = ["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const;
 const VULN_STATUS = [

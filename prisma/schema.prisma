@@ -23,8 +23,27 @@ model User {
   createdTasks            Task[]          @relation("CreatedTasks")
   assignedVulnerabilities Vulnerability[] @relation("VulnAssignee")
   reportedVulnerabilities Vulnerability[] @relation("VulnReporter")
+  personalAccessTokens    PersonalAccessToken[]
 
   @@map("users")
+}
+
+model PersonalAccessToken {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  tokenHash   String    @unique
+  prefix      String
+  scopes      String[]  @default(["*"])
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@map("personal_access_tokens")
 }
 
 enum SystemRole {
