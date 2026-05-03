@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "release-type": "node",
+  "bootstrap-sha": "f4a7b80",
   "packages": {
     ".": {
       "package-name": "limelight",
@@ -10,7 +11,8 @@
       "draft": false,
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
-      "bump-patch-for-minor-pre-major": false
+      "bump-patch-for-minor-pre-major": false,
+      "bootstrap-sha": "f4a7b80"
     }
   },
   "changelog-sections": [
