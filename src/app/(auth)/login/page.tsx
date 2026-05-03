@@ -90,11 +90,13 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <div className="bg-orange-50 px-8 py-4 border-t border-orange-100">
-        <p className="text-xs text-center text-gray-500">
-          Demo: <span className="font-mono">demo@example.com</span> / <span className="font-mono">password123</span>
-        </p>
-      </div>
+      {process.env.NODE_ENV !== "production" && (
+        <div className="bg-orange-50 px-8 py-4 border-t border-orange-100">
+          <p className="text-xs text-center text-gray-500">
+            Demo: <span className="font-mono">demo@example.com</span> / <span className="font-mono">password123</span>
+          </p>
+        </div>
+      )}
     </div>
   );
 }
