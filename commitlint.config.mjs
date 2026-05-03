@@ -5,8 +5,11 @@
  *
  * Allowed types are kept in sync with the release-please configuration
  * and the PR-title lint job in .github/workflows/commitlint.yml.
+ *
+ * Uses ESM (.mjs) because wagoid/commitlint-github-action v6+ requires
+ * an .mjs config file when running inside its container.
  */
-module.exports = {
+export default {
   extends: ["@commitlint/config-conventional"],
   rules: {
     "type-enum": [
