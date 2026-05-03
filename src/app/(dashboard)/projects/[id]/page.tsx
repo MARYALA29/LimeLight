@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { Board } from "@/components/board/board";
+import { ProjectTabs } from "@/components/projects/project-tabs";
 
 export default async function ProjectPage({
   params,
@@ -74,6 +75,11 @@ export default async function ProjectPage({
           Settings
         </Link>
       </div>
+
+      <div className="mb-6">
+        <ProjectTabs projectId={project.id} active="board" />
+      </div>
+
       <Board
         project={project}
         initialTasks={tasks}

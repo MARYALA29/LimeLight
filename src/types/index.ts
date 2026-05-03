@@ -1,6 +1,13 @@
-import { Priority, Role, SystemRole } from "@prisma/client";
+import {
+  Priority,
+  Role,
+  SystemRole,
+  VulnSeverity,
+  VulnStatus,
+  ExploitStatus,
+} from "@prisma/client";
 
-export type { Priority, Role, SystemRole };
+export type { Priority, Role, SystemRole, VulnSeverity, VulnStatus, ExploitStatus };
 
 export interface User {
   id: string;
@@ -67,6 +74,32 @@ export interface Task {
 export interface BoardColumn {
   status: Status;
   tasks: Task[];
+}
+
+export interface Vulnerability {
+  id: string;
+  projectId: string;
+  title: string;
+  description: string | null;
+  cveId: string | null;
+  ghsaId: string | null;
+  severity: VulnSeverity;
+  cvssScore: number | null;
+  cvssVector: string | null;
+  exploitStatus: ExploitStatus;
+  affectedComponent: string | null;
+  affectedVersions: string | null;
+  fixedVersion: string | null;
+  status: VulnStatus;
+  reportedAt: Date;
+  patchedAt: Date | null;
+  verifiedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  reporterId: string;
+  assigneeId: string | null;
+  reporter?: User;
+  assignee?: User | null;
 }
 
 export interface ApiResponse<T> {
