@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui";
 import { Role, User, Vulnerability, VulnSeverity, VulnStatus } from "@/types";
 import { SeverityBadge } from "./severity-badge";
@@ -189,7 +190,7 @@ export function VulnerabilitiesList({
       ) : (
         <div className="rounded-2xl border border-orange-100 bg-white shadow-sm divide-y divide-orange-50 overflow-hidden">
           {visible.map((v) => (
-            <VulnRow key={v.id} vuln={v} />
+            <VulnRow key={v.id} vuln={v} projectId={projectId} />
           ))}
         </div>
       )}
@@ -229,9 +230,13 @@ function FilterPill({
   );
 }
 
-function VulnRow({ vuln }: { vuln: Vulnerability }) {
+function VulnRow({ vuln, projectId }: { vuln: Vulnerability; projectId: string }) {
   return (
-    <div data-testid="vuln-row" className="p-4 hover:bg-orange-50/50 transition-colors">
+    <Link
+      data-testid="vuln-row"
+      href={`/projects/${projectId}/vulnerabilities/${vuln.id}`}
+      className="block p-4 hover:bg-orange-50/50 transition-colors"
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
@@ -267,6 +272,6 @@ function VulnRow({ vuln }: { vuln: Vulnerability }) {
           {vuln.assignee && <span>{vuln.assignee.name}</span>}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
