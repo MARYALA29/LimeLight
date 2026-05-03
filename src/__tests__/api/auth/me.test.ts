@@ -69,7 +69,7 @@ describe("GET /api/auth/me", () => {
   });
 
   it("returns the user when authenticated", async () => {
-    mockedAuthOrPAT.mockResolvedValue({ user: baseUser, source: "session" });
+    mockedAuthOrPAT.mockResolvedValue({ user: baseUser, viaPAT: false });
     const res = await GET(makeGet());
     expect(res.status).toBe(200);
     const body = await res.json();
