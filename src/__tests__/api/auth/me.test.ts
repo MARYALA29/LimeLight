@@ -18,11 +18,19 @@ jest.mock("@/lib/auth", () => ({
   getCurrentUser: jest.fn(),
 }));
 
+jest.mock("@/lib/auth-pat", () => ({
+  getCurrentUserOrPATUser: jest.fn(),
+}));
+
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUserOrPATUser } from "@/lib/auth-pat";
 import { GET, PATCH } from "@/app/api/auth/me/route";
 
 const mockedAuth = getCurrentUser as jest.MockedFunction<typeof getCurrentUser>;
+const mockedAuthOrPAT = getCurrentUserOrPATUser as jest.MockedFunction<
+  typeof getCurrentUserOrPATUser
+>;
 const mockedPrisma = prisma as unknown as {
   user: { update: jest.Mock };
 };
@@ -45,20 +53,24 @@ function makePatch(body: Record<string, unknown>) {
   });
 }
 
+function makeGet() {
+  return new NextRequest("http://localhost/api/auth/me", { method: "GET" });
+}
+
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 describe("GET /api/auth/me", () => {
   it("returns 401 when unauthenticated", async () => {
-    mockedAuth.mockResolvedValue(null);
-    const res = await GET();
+    mockedAuthOrPAT.mockResolvedValue(null);
+    const res = await GET(makeGet());
     expect(res.status).toBe(401);
   });
 
   it("returns the user when authenticated", async () => {
-    mockedAuth.mockResolvedValue(baseUser);
-    const res = await GET();
+    mockedAuthOrPAT.mockResolvedValue({ user: baseUser, source: "session" });
+    const res = await GET(makeGet());
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.user.id).toBe("user-1");
