@@ -111,6 +111,7 @@ After seeding the database, you can log in with:
 | `npm test` | Run tests |
 | `npm run test:watch` | Run tests in watch mode |
 | `npm run test:coverage` | Run tests with coverage report |
+| `npm run test:smoke` | Smoke-test the deployed API (set `SMOKE_BASE_URL`) |
 | `npm run db:generate` | Generate Prisma client |
 | `npm run db:push` | Push schema to database |
 | `npm run db:migrate` | Run database migrations |
@@ -154,6 +155,29 @@ A coverage summary is posted as a PR comment on every push and updated in
 place by the
 [MishaKav/jest-coverage-comment](https://github.com/MishaKav/jest-coverage-comment)
 action.
+
+### Smoke tests against the deployed API
+
+Local unit and component tests use mocked fetches and a mocked Prisma client.
+That can mask real-world deploy issues — schema drift after a merge, missing
+env vars on Vercel, broken build artifacts — that only surface against the
+live HTTPS endpoints.
+
+`npm run test:smoke` exercises the deployed API end-to-end: registers a
+fresh user, signs in, mints a personal access token, uses it, revokes it,
+and confirms revocation takes effect. It also verifies `/api/version`
+returns the expected shape and that unauthenticated requests are rejected.
+
+Tests live in `src/__smoke__/` and are skipped from `npm test` and the
+coverage gate by configuration. Override the target deployment with:
+
+```bash
+SMOKE_BASE_URL=https://staging.example.vercel.app npm run test:smoke
+```
+
+A GitHub Actions workflow (`.github/workflows/smoke.yml`) runs the suite
+hourly against production and is also available via `workflow_dispatch`
+for ad-hoc post-deploy checks.
 
 ### Test Structure
 

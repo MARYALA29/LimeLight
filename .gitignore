@@ -46,3 +46,6 @@ next-env.d.ts
 
 # local npm cache (only created when HOME is set into the worktree)
 .npm/
+
+# Local agent worktrees
+.claude/

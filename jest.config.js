@@ -14,10 +14,21 @@ const customJestConfig = {
     "**/__tests__/**/*.[jt]s?(x)",
     "**/?(*.)+(spec|test).[jt]s?(x)",
   ],
+  // Smoke tests hit a real deployed environment over HTTPS — they don't
+  // belong in the default `npm test` run. Use `npm run test:smoke` instead.
+  // `.claude/worktrees/` holds isolated git worktrees used by background
+  // agents — their test files are not part of this checkout.
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "<rootDir>/src/__smoke__/",
+    "<rootDir>/.claude/",
+  ],
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}",
     // Exclude test files themselves from coverage stats
     "!src/__tests__/**",
+    // Smoke tests run against the deployed API, not the local code
+    "!src/__smoke__/**",
     // Exclude config files (tooling configuration, not app code)
     "!**/*.config.{ts,js}",
     // Exclude TypeScript declaration-only files
