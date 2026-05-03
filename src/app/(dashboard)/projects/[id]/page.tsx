@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { Board } from "@/components/board/board";
+import { BoardWithFilters } from "@/components/board/board-with-filters";
 import { ProjectTabs } from "@/components/projects/project-tabs";
 
 export default async function ProjectPage({
@@ -80,10 +80,11 @@ export default async function ProjectPage({
         <ProjectTabs projectId={project.id} active="board" />
       </div>
 
-      <Board
+      <BoardWithFilters
         project={project}
         initialTasks={tasks}
         members={project.members.map((m) => m.user)}
+        currentUser={user!}
       />
     </div>
   );

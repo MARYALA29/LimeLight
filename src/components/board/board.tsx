@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCorners, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { Column } from "./column";
 import { TaskCard } from "./task-card";
@@ -13,13 +13,22 @@ interface BoardProps {
   project: ProjectWithMembers;
   initialTasks: Task[];
   members: User[];
+  /** When true, columns swap their empty-state copy to "no tasks match your filters". */
+  filtersActive?: boolean;
 }
 
-export function Board({ project, initialTasks, members }: BoardProps) {
+export function Board({ project, initialTasks, members, filtersActive = false }: BoardProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+  // Sync local state when the parent supplies a new task list (e.g. filter
+  // refetch). We don't try to merge optimistic edits with refetched results —
+  // the parent is the source of truth for the tasks visible on the board.
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -120,6 +129,7 @@ export function Board({ project, initialTasks, members }: BoardProps) {
               status={column.status}
               tasks={column.tasks}
               onTaskClick={setSelectedTask}
+              filtersActive={filtersActive}
             />
           ))}
         </div>
