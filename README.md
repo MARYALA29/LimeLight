@@ -276,6 +276,56 @@ tokens. Revoked tokens are immediately invalid (401).
 | DELETE | `/api/tasks/[id]` | Delete task |
 | PATCH | `/api/tasks/[id]/move` | Move task (change status/order) |
 
+## Releases
+
+LimeLight follows [Semantic Versioning](https://semver.org/) and uses
+[release-please](https://github.com/googleapis/release-please) to automate
+release PRs, changelog generation, and Git tags.
+
+### Why release-please (vs semantic-release)
+
+- **Reviewable release PRs.** Each release is staged as a PR that bumps
+  `package.json`, updates `CHANGELOG.md`, and updates the manifest. Nothing
+  is tagged or published until that PR is merged.
+- **Simpler GitHub integration** via the official
+  `googleapis/release-please-action`.
+- **No npm publishing** required — we don't ship to a registry, we just
+  want versions and changelogs.
+
+### Conventional Commits
+
+Every commit on `main` (and every PR title, since PRs are squash-merged)
+must follow the [Conventional Commits](https://www.conventionalcommits.org/)
+spec. Allowed types:
+
+`feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `ci`, `perf`, `style`,
+`build`.
+
+A `commit-msg` hook (via husky + commitlint) enforces this locally; CI
+re-validates PR titles and PR commits.
+
+### SemVer rules for this project
+
+While we are pre-1.0, **any** release may contain breaking changes.
+
+| Bump | When |
+|------|------|
+| `MAJOR` (`x.0.0`) | Reserved for the 1.0 cut-over. Post-1.0: incompatible API changes (commit footer `BREAKING CHANGE:`). |
+| `MINOR` (`0.x.0`) | New features (`feat:`). May break things while pre-1.0. |
+| `PATCH` (`0.x.y`) | Bug fixes (`fix:`), perf (`perf:`), and other non-feature changes. |
+
+### Workflow
+
+1. Open a PR with a Conventional Commit-formatted title (CI lints it).
+2. Squash-merge into `main`. The squashed commit message is the PR title.
+3. The `Release` workflow runs and either opens a new release PR or
+   updates the existing one with the version bump and changelog entries.
+4. Review and merge the release PR. release-please tags the commit
+   (e.g. `v0.2.0`) and creates a GitHub Release.
+
+If a push to `main` contains no version-bumping commits, release-please
+is a no-op.
+
 ## License
 
 This project is private and proprietary.

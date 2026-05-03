@@ -1,0 +1,3 @@
+# Intentionally minimal: full lint/test/build runs in CI on every PR.
+# Add fast checks here (e.g. lint-staged) when contributors want pre-commit feedback.
+exit 0

@@ -82,9 +82,27 @@ npm run test:coverage    # With coverage
 - Email: `demo@example.com`
 - Password: `password123`
 
+## Releases & Conventional Commits
+
+- **PR titles must follow [Conventional Commits](https://www.conventionalcommits.org/).**
+  CI lints PR titles via `amannn/action-semantic-pull-request`. The squash-merge
+  commit on `main` is sourced from the PR title, so a non-conforming title will
+  produce a non-conforming commit on `main`.
+- Allowed types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `ci`,
+  `perf`, `style`, `build`. Subject must start with a lowercase letter.
+- Releases are automated by [release-please](https://github.com/googleapis/release-please).
+  On every push to `main`, a release PR is opened or updated; merging it
+  bumps `package.json` version, appends to `CHANGELOG.md`, and tags the
+  release. Pre-1.0 — `feat:` ⇒ minor bump, `fix:` ⇒ patch bump, breaking
+  changes (`!` or `BREAKING CHANGE:` footer) currently surface as minor
+  bumps until 1.0.
+- The `/api/version` endpoint exposes the current `version`, `commit`, and
+  `builtAt` for diagnostics.
+
 ## Common Pitfalls to Avoid
 
 1. **Don't use `params.then()` in client components** — use `useParams()` from `next/navigation`
 2. **Don't forget to `forwardRef`** when mocking components in tests that use refs
 3. **Don't run `git push --force`** to main without explicit permission
 4. **Don't skip writing tests** — this is non-negotiable for this project
+5. **Don't use non-conventional PR titles** — release-please depends on them

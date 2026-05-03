@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: release-please
+    runs-on: ubuntu-latest
+    steps:
+      # release-please opens / updates a "release PR" that bumps the
+      # version in package.json + .release-please-manifest.json and
+      # appends generated entries to CHANGELOG.md. Merging that PR
+      # creates a Git tag and a GitHub Release. If there are no
+      # version-bumping commits since the last release, this is a no-op.
+      - name: Run release-please
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
