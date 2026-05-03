@@ -1,8 +1,0 @@
-{
-  "root": true,
-  "extends": ["next/core-web-vitals"],
-  "rules": {
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
-  },
-  "ignorePatterns": ["src/__tests__/**", "jest.config.js", "jest.setup.js"]
-}

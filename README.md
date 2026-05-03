@@ -1,8 +1,8 @@
 # LimeLight
 
-A modern task management application inspired by Jira, built with Next.js 14 and PostgreSQL.
+A modern task management application inspired by Jira, built with Next.js 16 and PostgreSQL.
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)
 ![Prisma](https://img.shields.io/badge/Prisma-5.20-2D3748)
@@ -20,8 +20,8 @@ A modern task management application inspired by Jira, built with Next.js 14 and
 ## Tech Stack
 
 ### Frontend
-- **Next.js 14** - React framework with App Router
-- **React 18** - UI library
+- **Next.js 16** - React framework with App Router
+- **React 19** - UI library
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Styling
 - **dnd-kit** - Drag and drop functionality

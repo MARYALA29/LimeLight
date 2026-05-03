@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-LimeLight is a Jira-like task management application built with Next.js 14, PostgreSQL, and Prisma. See [README.md](./README.md) for full project documentation.
+LimeLight is a Jira-like task management application built with Next.js 16, PostgreSQL, and Prisma. See [README.md](./README.md) for full project documentation.
 
 ## Development Preferences
 
@@ -38,9 +38,14 @@ the threshold.
 
 ### Tech Stack Notes
 
-- **Next.js 14** (NOT Next.js 16 — params handling differs)
-- **Client components** use `useParams()` from `next/navigation` — params is NOT a Promise
-- **Server components** can `await params` when typed as `Promise<{...}>`
+- **Next.js 16** with the App Router and React 19
+- **Server components & route handlers**: `params` is `Promise<{...}>` and must
+  be awaited. Same goes for `cookies()`, `headers()`, and `draftMode()` from
+  `next/headers` — they are async in Next 16.
+- **Client components** use `useParams()` from `next/navigation` — that hook is
+  still synchronous and is **not** a Promise. Don't `await` it.
+- **ESLint**: flat config in `eslint.config.mjs`, run via `npm run lint`
+  (which calls `eslint .` directly — `next lint` was removed in Next 16).
 - **Tailwind CSS 3** with custom orange theme (see `tailwind.config.ts`)
 
 ### File Organization

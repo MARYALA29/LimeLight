@@ -7,26 +7,8 @@
   "high": true,
   "critical": true,
   "report-type": "important",
-  // Allowlisted advisories. These cannot be patched while the project is pinned
-  // to Next.js 14 (per CLAUDE.md). Tracked in MARYALA29/LimeLight#9 — remove
-  // entries from this list as the Next migration clears them.
-  "allowlist": [
-    // glob CLI command injection — transitive via eslint-config-next 14
-    "GHSA-5j98-mcp5-4vw2",
-
-    // minimatch ReDoS — transitive via @typescript-eslint through eslint-config-next 14
-    "GHSA-3ppc-4f35-3m26",
-    "GHSA-7r86-cg39-jmmj",
-    "GHSA-23c5-xmqv-rm74",
-
-    // Next.js — fix requires next@16, blocked by CLAUDE.md pinning to Next 14
-    "GHSA-9g9p-9gw9-jx7f", // Image Optimizer remotePatterns DoS
-    "GHSA-h25m-26qc-wcjf", // RSC HTTP request deserialization DoS
-    "GHSA-ggv3-7p47-pfv8", // HTTP request smuggling in rewrites
-    "GHSA-3x4c-7xq6-9pq8", // next/image disk cache exhaustion
-    "GHSA-q4gf-8mx6-v5v3", // Server Components DoS
-
-    // postcss XSS — transitive via next 14
-    "GHSA-qx2v-qp2m-jg93"
-  ]
+  // No advisories are currently allowlisted. The previous entries (tracked in
+  // MARYALA29/LimeLight#9) were cleared by the Next.js 16 migration; the
+  // dependency-audit gate now catches any genuinely new high/critical CVE.
+  "allowlist": []
 }
