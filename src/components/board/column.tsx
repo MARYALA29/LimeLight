@@ -9,9 +9,11 @@ interface ColumnProps {
   status: Status;
   tasks: Task[];
   onTaskClick: (task: Task) => void;
+  /** When true, the empty state reads as "filtered to nothing" rather than "drop here". */
+  filtersActive?: boolean;
 }
 
-export function Column({ status, tasks, onTaskClick }: ColumnProps) {
+export function Column({ status, tasks, onTaskClick, filtersActive = false }: ColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status.id });
 
   return (
@@ -38,7 +40,7 @@ export function Column({ status, tasks, onTaskClick }: ColumnProps) {
 
       {tasks.length === 0 && (
         <div className="rounded-xl border-2 border-dashed border-orange-200 p-4 text-center text-sm text-gray-400">
-          Drop tasks here
+          {filtersActive ? "No tasks match your filters" : "Drop tasks here"}
         </div>
       )}
     </div>
