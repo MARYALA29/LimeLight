@@ -8,6 +8,14 @@ While the project is pre-1.0, **any** release may contain breaking changes.
 Minor bumps (`0.x.0`) typically introduce features (and may break things);
 patch bumps (`0.x.y`) carry bug fixes only.
 
+## [0.2.0](https://github.com/MARYALA29/LimeLight/compare/limelight-v0.1.0...limelight-v0.2.0) (2026-05-03)
+
+
+### Features
+
+* add dark theme as user preference ([#19](https://github.com/MARYALA29/LimeLight/issues/19)) ([61bc771](https://github.com/MARYALA29/LimeLight/commit/61bc771bf8acf5048a78833214f5793e477aa158))
+* add task filtering on the project board ([#18](https://github.com/MARYALA29/LimeLight/issues/18)) ([ae69da4](https://github.com/MARYALA29/LimeLight/commit/ae69da47c494a14d63170cb9e838f6e690d11ca4))
+
 ## [0.1.0] - 2026-05-03
 
 Initial pre-1.0 baseline. Subsequent releases will be generated automatically
