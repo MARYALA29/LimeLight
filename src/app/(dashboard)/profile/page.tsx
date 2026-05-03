@@ -10,6 +10,7 @@ import {
   ChangePasswordInput,
 } from "@/lib/validations";
 import { Avatar, Badge, Button, Input } from "@/components/ui";
+import { PersonalAccessTokens } from "@/components/settings/PersonalAccessTokens";
 import { User } from "@/types";
 import { formatDate } from "@/lib/utils";
 
@@ -302,6 +303,10 @@ export default function ProfilePage() {
             </Button>
           </div>
         </form>
+      </div>
+
+      <div className="mt-6">
+        <PersonalAccessTokens />
       </div>
     </div>
   );
