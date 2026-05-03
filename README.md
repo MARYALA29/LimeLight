@@ -300,6 +300,42 @@ tokens. Revoked tokens are immediately invalid (401).
 | DELETE | `/api/tasks/[id]` | Delete task |
 | PATCH | `/api/tasks/[id]/move` | Move task (change status/order) |
 
+## API Documentation
+
+LimeLight ships an OpenAPI 3.1 specification generated at runtime from the
+existing Zod validators in [`src/lib/validations.ts`](./src/lib/validations.ts),
+so the docs cannot drift from the runtime contract.
+
+- **Interactive docs (Swagger UI)**: [`/docs`](./src/app/docs/page.tsx) —
+  public route. Renders the spec via `swagger-ui-react` against the live
+  endpoint. Open `https://<your-host>/docs` to try requests in the browser.
+- **Raw spec**: `GET /api/openapi.json` — public, cached for 60 seconds.
+  Drop the URL into Postman, Insomnia, or any OpenAPI codegen tool.
+
+### Security schemes
+
+The spec declares two security schemes:
+
+| Scheme | How to send | Notes |
+|--------|-------------|-------|
+| `bearerAuth` | `Authorization: Bearer ll_pat_<token>` | Personal Access Token. Same access as the user's UI session. |
+| `cookieAuth` | `Cookie: auth-token=<jwt>` | Session cookie set by `/api/auth/login`. |
+
+Most endpoints accept **either** scheme. The PAT-management endpoints
+(`/api/users/me/tokens`, `/api/users/me/tokens/{id}`,
+`/api/users/me/preferences`, and `PATCH /api/auth/me`) intentionally
+accept the **session cookie only** — a stolen PAT must not be able to
+mint or revoke tokens, change a user's display name, or update profile
+fields.
+
+### Adding a new route or schema
+
+Any new `route.ts` under `src/app/api/**` or any new Zod validator in
+`src/lib/validations.ts` MUST be registered in
+[`src/lib/openapi/registry.ts`](./src/lib/openapi/registry.ts). The Jest
+coverage gate at `src/__tests__/lib/openapi/coverage.test.ts` walks the
+filesystem and fails CI when a route file has no matching registration.
+
 ## Releases
 
 LimeLight follows [Semantic Versioning](https://semver.org/) and uses
