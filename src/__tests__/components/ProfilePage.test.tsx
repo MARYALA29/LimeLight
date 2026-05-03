@@ -48,8 +48,30 @@ jest.mock("@/components/ui", () => {
         {children}
       </span>
     ),
+    Modal: ({
+      isOpen,
+      title,
+      children,
+    }: {
+      isOpen: boolean;
+      onClose: () => void;
+      title?: React.ReactNode;
+      children: React.ReactNode;
+    }) =>
+      isOpen ? (
+        <div role="dialog" aria-label={typeof title === "string" ? title : "Modal"}>
+          {title && <div>{title}</div>}
+          {children}
+        </div>
+      ) : null,
   };
 });
+
+// PersonalAccessTokens panel makes its own fetch — stub it so the existing
+// fetch-mock sequences in this file remain accurate.
+jest.mock("@/components/settings/PersonalAccessTokens", () => ({
+  PersonalAccessTokens: () => <div data-testid="pat-panel" />,
+}));
 
 const mockAdmin = {
   id: "admin-1",
