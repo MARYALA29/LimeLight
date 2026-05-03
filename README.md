@@ -325,8 +325,28 @@ spec. Allowed types:
 `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `ci`, `perf`, `style`,
 `build`.
 
-A `commit-msg` hook (via husky + commitlint) enforces this locally; CI
-re-validates PR titles and PR commits.
+Three layers enforce the rule so a non-conforming title cannot reach `main`:
+
+1. **Local commits** — a `commit-msg` hook (via husky + commitlint) blocks
+   non-conforming messages on `git commit`. The hook is wired
+   automatically by the `prepare: husky` script in `package.json` after
+   `npm install`.
+2. **PR creation in the Claude Code harness** — a `PreToolUse` hook
+   declared in `.claude/settings.json` runs
+   `scripts/claude-hooks/validate-pr-title.mjs` before any `Bash` tool
+   call. It intercepts `gh pr create` / `gh pr edit --title` and
+   short-circuits with a clear error if the `--title` value isn't a
+   Conventional Commit. Contributors using the harness get the same lint
+   the CI uses, but earlier — before the PR is ever opened.
+3. **CI** — `.github/workflows/commitlint.yml` re-validates the PR
+   title via `amannn/action-semantic-pull-request` and lints every
+   commit in the PR via `wagoid/commitlint-github-action`.
+
+The validator that powers layers 1 and 2 lives in
+`src/lib/conventional-commits.ts` and is unit-tested in
+`src/__tests__/lib/conventional-commits.test.ts`. The
+`commitlint.config.mjs` file is the source of truth for the type list;
+all other consumers are kept in sync via the tests.
 
 ### SemVer rules for this project
 

@@ -104,6 +104,47 @@ npm run test:coverage    # With coverage
 - The `/api/version` endpoint exposes the current `version`, `commit`, and
   `builtAt` for diagnostics.
 
+### PR title checklist (enforced by three layers)
+
+Before opening a PR, the title must pass all three of these gates. They
+duplicate each other on purpose so a non-conforming title cannot reach
+`main`:
+
+1. **Harness `PreToolUse` hook** — `.claude/settings.json` runs
+   `scripts/claude-hooks/validate-pr-title.mjs` before every `Bash` tool
+   call. The hook intercepts `gh pr create` / `gh pr edit --title` /
+   `gh pr update --title` and exits non-zero with a clear error if the
+   `--title` value isn't a Conventional Commit. This catches the title
+   *before* the network call.
+2. **Husky `commit-msg` hook** — `.husky/commit-msg` shells out to
+   `commitlint` on every local commit. Same allowed-types list as above
+   (see `commitlint.config.mjs`).
+3. **CI** — `.github/workflows/commitlint.yml` re-validates the PR
+   title via `amannn/action-semantic-pull-request` and lints every
+   commit in the PR via `wagoid/commitlint-github-action`.
+
+The validator behind layer 1 lives at `src/lib/conventional-commits.ts`
+(unit-tested in `src/__tests__/lib/conventional-commits.test.ts`); the
+hook script re-exports the same regex so it has zero runtime
+dependencies. If you change the allowed types in one place, change them
+everywhere — the test suite asserts they stay aligned.
+
+**Format reference:**
+
+```
+type(scope)?!?: subject
+^^^^                ^^^^^^^
+allowed             must start with a lowercase letter
+type
+```
+
+Examples:
+
+- `feat: add login form`
+- `fix(auth): handle expired tokens`
+- `feat(api)!: drop legacy /v1 endpoints`
+- `chore: bump dependencies`
+
 ## Common Pitfalls to Avoid
 
 1. **Don't use `params.then()` in client components** — use `useParams()` from `next/navigation`
