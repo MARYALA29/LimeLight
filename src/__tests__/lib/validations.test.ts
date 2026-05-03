@@ -3,6 +3,7 @@ import {
   addMemberSchema,
   updateMemberSchema,
   changePasswordSchema,
+  updateThemePreferenceSchema,
 } from "@/lib/validations";
 
 describe("updateProfileSchema", () => {
@@ -144,5 +145,74 @@ describe("changePasswordSchema", () => {
 
   it("rejects missing fields", () => {
     expect(changePasswordSchema.safeParse({}).success).toBe(false);
+  });
+});
+
+describe("updateProfileSchema with themePreference", () => {
+  it("accepts a valid themePreference: LIGHT", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      themePreference: "LIGHT",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid themePreference: DARK", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      themePreference: "DARK",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid themePreference: SYSTEM", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      themePreference: "SYSTEM",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects an invalid themePreference value", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      themePreference: "PURPLE",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("treats themePreference as optional", () => {
+    const result = updateProfileSchema.safeParse({ name: "Jane" });
+    expect(result.success).toBe(true);
+  });
+});
+
+describe("updateThemePreferenceSchema", () => {
+  it("accepts LIGHT", () => {
+    expect(
+      updateThemePreferenceSchema.safeParse({ themePreference: "LIGHT" }).success
+    ).toBe(true);
+  });
+
+  it("accepts DARK", () => {
+    expect(
+      updateThemePreferenceSchema.safeParse({ themePreference: "DARK" }).success
+    ).toBe(true);
+  });
+
+  it("accepts SYSTEM", () => {
+    expect(
+      updateThemePreferenceSchema.safeParse({ themePreference: "SYSTEM" }).success
+    ).toBe(true);
+  });
+
+  it("rejects unknown values", () => {
+    expect(
+      updateThemePreferenceSchema.safeParse({ themePreference: "AUTO" }).success
+    ).toBe(false);
+  });
+
+  it("rejects missing themePreference", () => {
+    expect(updateThemePreferenceSchema.safeParse({}).success).toBe(false);
   });
 });

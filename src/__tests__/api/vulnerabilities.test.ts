@@ -53,6 +53,7 @@ const adminUser = {
   name: "Admin",
   avatarUrl: null,
   role: "USER" as const,
+  themePreference: "SYSTEM" as const,
   createdAt: new Date("2024-01-01"),
 };
 

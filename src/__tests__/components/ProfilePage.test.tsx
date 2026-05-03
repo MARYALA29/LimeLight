@@ -1,6 +1,30 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import ProfilePage from "@/app/(dashboard)/profile/page";
+
+beforeAll(() => {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    writable: true,
+    value: jest.fn().mockImplementation(() => ({
+      matches: false,
+      media: "(prefers-color-scheme: dark)",
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+});
+
+const renderProfile = () =>
+  render(
+    <ThemeProvider initialPreference="SYSTEM" persistOnChange={false}>
+      <ProfilePage />
+    </ThemeProvider>
+  );
 
 jest.mock("@/components/ui", () => {
   const React = require("react");
@@ -79,6 +103,7 @@ const mockAdmin = {
   name: "Admin User",
   avatarUrl: null,
   role: "ADMIN",
+  themePreference: "SYSTEM",
   createdAt: "2024-01-01T00:00:00.000Z",
 };
 
@@ -88,6 +113,7 @@ const mockUser = {
   name: "Demo User",
   avatarUrl: null,
   role: "USER",
+  themePreference: "SYSTEM",
   createdAt: "2024-01-01T00:00:00.000Z",
 };
 
@@ -102,7 +128,7 @@ describe("ProfilePage", () => {
       json: async () => ({ user: mockUser }),
     });
 
-    render(<ProfilePage />);
+    renderProfile();
 
     await waitFor(() => {
       expect(screen.getByLabelText(/^name$/i)).toHaveValue("Demo User");
@@ -120,7 +146,7 @@ describe("ProfilePage", () => {
       json: async () => ({ user: mockAdmin }),
     });
 
-    render(<ProfilePage />);
+    renderProfile();
 
     await waitFor(() => {
       expect(screen.getByLabelText(/^name$/i)).toHaveValue("Admin User");
@@ -143,7 +169,7 @@ describe("ProfilePage", () => {
         json: async () => ({ user: { ...mockUser, name: "New Name" } }),
       });
 
-    render(<ProfilePage />);
+    renderProfile();
 
     await waitFor(() => {
       expect(screen.getByLabelText(/^name$/i)).toHaveValue("Demo User");
@@ -172,7 +198,7 @@ describe("ProfilePage", () => {
       json: async () => ({ error: "Unauthorized" }),
     });
 
-    render(<ProfilePage />);
+    renderProfile();
 
     await waitFor(() => {
       expect(screen.getByText(/unable to load profile/i)).toBeInTheDocument();
@@ -185,7 +211,7 @@ describe("ProfilePage", () => {
       json: async () => ({ user: mockUser }),
     });
 
-    render(<ProfilePage />);
+    renderProfile();
 
     await waitFor(() => {
       expect(screen.getByLabelText(/current password/i)).toBeInTheDocument();
@@ -209,7 +235,7 @@ describe("ProfilePage", () => {
         json: async () => ({ success: true }),
       });
 
-    render(<ProfilePage />);
+    renderProfile();
 
     await waitFor(() => {
       expect(screen.getByLabelText(/current password/i)).toBeInTheDocument();
@@ -236,6 +262,57 @@ describe("ProfilePage", () => {
     expect(body.confirmNewPassword).toBe("newpw456");
   });
 
+  it("renders the theme toggle with Light / Dark / System options", async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ user: mockUser }),
+    });
+
+    renderProfile();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/^name$/i)).toHaveValue("Demo User");
+    });
+
+    expect(screen.getByRole("radio", { name: /light/i })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: /dark/i })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: /system/i })).toBeInTheDocument();
+  });
+
+  it("PATCHes the preferences endpoint when theme is changed", async () => {
+    const user = userEvent.setup();
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: mockUser }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: { ...mockUser, themePreference: "DARK" } }),
+      });
+
+    render(
+      <ThemeProvider initialPreference="LIGHT" persistOnChange={true}>
+        <ProfilePage />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/^name$/i)).toHaveValue("Demo User");
+    });
+
+    await user.click(screen.getByRole("radio", { name: /dark/i }));
+
+    await waitFor(() => {
+      const calls = (global.fetch as jest.Mock).mock.calls;
+      const patchCall = calls.find(
+        (c) => c[0] === "/api/users/me/preferences" && c[1]?.method === "PATCH"
+      );
+      expect(patchCall).toBeDefined();
+      expect(JSON.parse(patchCall![1].body).themePreference).toBe("DARK");
+    });
+  });
+
   it("shows error when confirmation does not match new password", async () => {
     const user = userEvent.setup();
 
@@ -244,7 +321,7 @@ describe("ProfilePage", () => {
       json: async () => ({ user: mockUser }),
     });
 
-    render(<ProfilePage />);
+    renderProfile();
 
     await waitFor(() => {
       expect(screen.getByLabelText(/current password/i)).toBeInTheDocument();

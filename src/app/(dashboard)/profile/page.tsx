@@ -11,6 +11,7 @@ import {
 } from "@/lib/validations";
 import { Avatar, Badge, Button, Input } from "@/components/ui";
 import { PersonalAccessTokens } from "@/components/settings/PersonalAccessTokens";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { User } from "@/types";
 import { formatDate } from "@/lib/utils";
 
@@ -136,7 +137,7 @@ export default function ProfilePage() {
   if (loadError || !user) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center text-red-600">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center text-red-600 dark:border-red-900/50 dark:bg-red-950/50 dark:text-red-300">
           {loadError || "Unable to load profile"}
         </div>
       </div>
@@ -147,10 +148,12 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-2xl border border-orange-100 shadow-sm">
-        <div className="border-b border-orange-100 px-8 py-6">
-          <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
-          <p className="text-sm text-gray-500 mt-1">
+      <div className="bg-white dark:bg-dark-surface rounded-2xl border border-orange-100 dark:border-dark-border shadow-sm">
+        <div className="border-b border-orange-100 dark:border-dark-border px-8 py-6">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">
+            Profile
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-dark-text-secondary mt-1">
             Manage your account information and preferences
           </p>
         </div>
@@ -159,15 +162,19 @@ export default function ProfilePage() {
           <div className="flex items-center gap-4 mb-8">
             <Avatar name={user.name} src={user.avatarUrl} size="lg" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-text-primary">
+                {user.name}
+              </h2>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-sm text-gray-500">{user.email}</span>
+                <span className="text-sm text-gray-500 dark:text-dark-text-secondary">
+                  {user.email}
+                </span>
                 <Badge
                   variant={isAdmin ? "primary" : "default"}
                   className={
                     isAdmin
-                      ? "bg-orange-100 text-orange-700"
-                      : "bg-gray-100 text-gray-700"
+                      ? "bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300"
+                      : "bg-gray-100 text-gray-700 dark:bg-dark-surface-hover dark:text-dark-text-secondary"
                   }
                 >
                   {isAdmin ? "Admin" : "User"}
@@ -178,12 +185,12 @@ export default function ProfilePage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {error && (
-              <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-600">
+              <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-950/50 dark:text-red-300">
                 {error}
               </div>
             )}
             {success && (
-              <div className="rounded-xl bg-green-50 border border-green-200 p-3 text-sm text-green-700">
+              <div className="rounded-xl bg-green-50 border border-green-200 p-3 text-sm text-green-700 dark:border-green-900/50 dark:bg-green-950/50 dark:text-green-300">
                 {success}
               </div>
             )}
@@ -203,38 +210,44 @@ export default function ProfilePage() {
               {...register("avatarUrl")}
             />
 
-            <div className="grid grid-cols-2 gap-4 border-t border-orange-100 pt-6">
+            <div className="grid grid-cols-2 gap-4 border-t border-orange-100 dark:border-dark-border pt-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1.5">
                   Email
                 </label>
-                <p className="text-sm text-gray-900">{user.email}</p>
-                <p className="text-xs text-gray-400 mt-0.5">Email cannot be changed</p>
+                <p className="text-sm text-gray-900 dark:text-dark-text-primary">
+                  {user.email}
+                </p>
+                <p className="text-xs text-gray-400 dark:text-dark-text-secondary mt-0.5">
+                  Email cannot be changed
+                </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1.5">
                   Role
                 </label>
                 <Badge
                   className={
                     isAdmin
-                      ? "bg-orange-100 text-orange-700"
-                      : "bg-gray-100 text-gray-700"
+                      ? "bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300"
+                      : "bg-gray-100 text-gray-700 dark:bg-dark-surface-hover dark:text-dark-text-secondary"
                   }
                 >
                   {isAdmin ? "Admin" : "User"}
                 </Badge>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p className="text-xs text-gray-400 dark:text-dark-text-secondary mt-0.5">
                   {isAdmin
                     ? "Full access to project management"
                     : "Standard user access"}
                 </p>
               </div>
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1.5">
                   Member since
                 </label>
-                <p className="text-sm text-gray-900">{formatDate(user.createdAt)}</p>
+                <p className="text-sm text-gray-900 dark:text-dark-text-primary">
+                  {formatDate(user.createdAt)}
+                </p>
               </div>
             </div>
 
@@ -247,11 +260,28 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* Appearance / theme */}
+      <div className="bg-white dark:bg-dark-surface rounded-2xl border border-orange-100 dark:border-dark-border shadow-sm mt-6">
+        <div className="border-b border-orange-100 dark:border-dark-border px-8 py-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text-primary">
+            Appearance
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-dark-text-secondary mt-1">
+            Choose how LimeLight looks. System will follow your operating system.
+          </p>
+        </div>
+        <div className="p-8">
+          <ThemeToggle />
+        </div>
+      </div>
+
       {/* Change password */}
-      <div className="bg-white rounded-2xl border border-orange-100 shadow-sm mt-6">
-        <div className="border-b border-orange-100 px-8 py-6">
-          <h2 className="text-xl font-bold text-gray-900">Change Password</h2>
-          <p className="text-sm text-gray-500 mt-1">
+      <div className="bg-white dark:bg-dark-surface rounded-2xl border border-orange-100 dark:border-dark-border shadow-sm mt-6">
+        <div className="border-b border-orange-100 dark:border-dark-border px-8 py-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text-primary">
+            Change Password
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-dark-text-secondary mt-1">
             Use a strong password — at least 6 characters and different from your
             current one.
           </p>

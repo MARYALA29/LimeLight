@@ -2,12 +2,21 @@ import {
   Priority,
   Role,
   SystemRole,
+  ThemePreference,
   VulnSeverity,
   VulnStatus,
   ExploitStatus,
 } from "@prisma/client";
 
-export type { Priority, Role, SystemRole, VulnSeverity, VulnStatus, ExploitStatus };
+export type {
+  Priority,
+  Role,
+  SystemRole,
+  ThemePreference,
+  VulnSeverity,
+  VulnStatus,
+  ExploitStatus,
+};
 
 export interface User {
   id: string;
@@ -15,6 +24,12 @@ export interface User {
   name: string;
   avatarUrl: string | null;
   role: SystemRole;
+  /**
+   * Optional because not every Prisma `select` includes this column —
+   * components that need it (the theme provider, profile page) read it
+   * from the auth-aware API which always selects it. Defaults to SYSTEM.
+   */
+  themePreference?: ThemePreference;
   createdAt: Date;
 }
 

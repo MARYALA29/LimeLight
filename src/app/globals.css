@@ -7,6 +7,11 @@
   --foreground: #1C1917;
 }
 
+.dark {
+  --background: #0A0A0A;
+  --foreground: #FAFAFA;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -14,7 +19,7 @@ body {
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border dark:border-dark-border;
   }
 }
 
