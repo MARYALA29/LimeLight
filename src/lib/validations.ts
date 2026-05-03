@@ -72,6 +72,10 @@ export const updateMemberSchema = z.object({
   }),
 });
 
+// Theme preference values — must mirror the Prisma `ThemePreference` enum.
+export const THEME_PREFERENCES = ["LIGHT", "DARK", "SYSTEM"] as const;
+export type ThemePreferenceInput = (typeof THEME_PREFERENCES)[number];
+
 // Profile validations
 export const updateProfileSchema = z
   .object({
@@ -85,6 +89,23 @@ export const updateProfileSchema = z
       .or(z.literal(""))
       .optional()
       .nullable(),
+    themePreference: z
+      .enum(THEME_PREFERENCES, {
+        errorMap: () => ({
+          message: "Theme preference must be LIGHT, DARK, or SYSTEM",
+        }),
+      })
+      .optional(),
+  })
+  .strip();
+
+export const updateThemePreferenceSchema = z
+  .object({
+    themePreference: z.enum(THEME_PREFERENCES, {
+      errorMap: () => ({
+        message: "Theme preference must be LIGHT, DARK, or SYSTEM",
+      }),
+    }),
   })
   .strip();
 
@@ -185,6 +206,7 @@ export type UpdateStatusInput = z.infer<typeof updateStatusSchema>;
 export type AddMemberInput = z.infer<typeof addMemberSchema>;
 export type UpdateMemberInput = z.infer<typeof updateMemberSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type UpdateThemePreferenceInput = z.infer<typeof updateThemePreferenceSchema>;
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 export type CreateVulnerabilityInput = z.infer<typeof createVulnerabilitySchema>;
 export type UpdateVulnerabilityInput = z.infer<typeof updateVulnerabilitySchema>;

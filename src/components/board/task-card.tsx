@@ -30,12 +30,12 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
       {...listeners}
       onClick={onClick}
       className={cn(
-        "cursor-pointer rounded-xl border border-orange-100 bg-white p-4 shadow-sm transition-all hover:shadow-md hover:border-orange-200",
+        "cursor-pointer rounded-xl border border-orange-100 bg-white p-4 shadow-sm transition-all hover:shadow-md hover:border-orange-200 dark:border-dark-border dark:bg-dark-surface-hover dark:hover:border-orange-500/40",
         isDragging && "opacity-50 shadow-lg"
       )}
     >
-      <p className="text-xs text-orange-500 font-medium">{task.key}</p>
-      <h4 className="mt-1 text-sm font-medium text-gray-900 line-clamp-2">
+      <p className="text-xs text-orange-500 font-medium dark:text-orange-400">{task.key}</p>
+      <h4 className="mt-1 text-sm font-medium text-gray-900 line-clamp-2 dark:text-dark-text-primary">
         {task.title}
       </h4>
 

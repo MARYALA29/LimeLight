@@ -9,14 +9,15 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
-  password  String
-  name      String
-  avatarUrl String?
-  role      SystemRole @default(USER)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id               String           @id @default(cuid())
+  email            String           @unique
+  password         String
+  name             String
+  avatarUrl        String?
+  role             SystemRole       @default(USER)
+  themePreference  ThemePreference  @default(SYSTEM)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 
   projects                ProjectMember[]
   assignedTasks           Task[]          @relation("AssignedTasks")
@@ -49,6 +50,12 @@ model PersonalAccessToken {
 enum SystemRole {
   USER
   ADMIN
+}
+
+enum ThemePreference {
+  LIGHT
+  DARK
+  SYSTEM
 }
 
 model Project {

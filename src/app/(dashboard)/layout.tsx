@@ -15,7 +15,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-orange-50/50 via-white to-amber-50/50">
+    <div className="flex h-screen bg-gradient-to-br from-orange-50/50 via-white to-amber-50/50 dark:from-dark-background dark:via-dark-surface dark:to-dark-background">
       <Sidebar user={user} />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header user={user} />

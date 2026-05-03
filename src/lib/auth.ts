@@ -67,6 +67,7 @@ export async function getCurrentUser() {
       name: true,
       avatarUrl: true,
       role: true,
+      themePreference: true,
       createdAt: true,
     },
   });

@@ -23,14 +23,14 @@ export function Header({ user }: HeaderProps) {
   const isAdmin = user.role === "ADMIN";
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-orange-100 bg-white px-6">
+    <header className="flex h-16 items-center justify-between border-b border-orange-100 bg-white px-6 dark:border-dark-border dark:bg-dark-surface">
       <div className="md:hidden flex items-center gap-2">
         <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
           <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+        <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent dark:from-orange-400 dark:to-amber-400">
           LimeLight
         </span>
       </div>
@@ -38,46 +38,54 @@ export function Header({ user }: HeaderProps) {
       <div className="relative">
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="flex items-center gap-2 rounded-lg p-2 hover:bg-orange-50 transition-colors"
+          className="flex items-center gap-2 rounded-lg p-2 hover:bg-orange-50 transition-colors dark:hover:bg-dark-surface-hover"
         >
           <Avatar name={user.name} src={user.avatarUrl} size="sm" />
           <div className="hidden md:flex md:flex-col md:items-start md:gap-0.5">
-            <span className="text-sm font-medium text-gray-700">{user.name}</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-dark-text-primary">
+              {user.name}
+            </span>
             <span
               className={`text-xs font-medium ${
-                isAdmin ? "text-orange-600" : "text-gray-400"
+                isAdmin
+                  ? "text-orange-600 dark:text-orange-400"
+                  : "text-gray-400 dark:text-dark-text-secondary"
               }`}
             >
               {isAdmin ? "Admin" : "User"}
             </span>
           </div>
-          <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="h-4 w-4 text-gray-400 dark:text-dark-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         {isMenuOpen && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setIsMenuOpen(false)} />
-            <div className="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-orange-100 bg-white py-1 shadow-lg">
-              <div className="border-b border-orange-100 px-4 py-3">
+            <div className="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-orange-100 bg-white py-1 shadow-lg dark:border-dark-border dark:bg-dark-surface">
+              <div className="border-b border-orange-100 px-4 py-3 dark:border-dark-border">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
+                  <p className="text-sm font-medium text-gray-900 truncate dark:text-dark-text-primary">
+                    {user.name}
+                  </p>
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                       isAdmin
-                        ? "bg-orange-100 text-orange-700"
-                        : "bg-gray-100 text-gray-600"
+                        ? "bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300"
+                        : "bg-gray-100 text-gray-600 dark:bg-dark-surface-hover dark:text-dark-text-secondary"
                     }`}
                   >
                     {isAdmin ? "Admin" : "User"}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 truncate mt-1">{user.email}</p>
+                <p className="text-xs text-gray-500 truncate mt-1 dark:text-dark-text-secondary">
+                  {user.email}
+                </p>
               </div>
               <Link
                 href="/profile"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-orange-50 transition-colors"
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-orange-50 transition-colors dark:text-dark-text-secondary dark:hover:bg-dark-surface-hover"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -86,7 +94,7 @@ export function Header({ user }: HeaderProps) {
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-orange-50 transition-colors"
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-orange-50 transition-colors dark:text-dark-text-secondary dark:hover:bg-dark-surface-hover"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
