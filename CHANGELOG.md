@@ -8,6 +8,13 @@ While the project is pre-1.0, **any** release may contain breaking changes.
 Minor bumps (`0.x.0`) typically introduce features (and may break things);
 patch bumps (`0.x.y`) carry bug fixes only.
 
+## [0.3.0](https://github.com/MARYALA29/LimeLight/compare/limelight-v0.2.0...limelight-v0.3.0) (2026-05-03)
+
+
+### Features
+
+* add openapi/swagger docs for the api ([#29](https://github.com/MARYALA29/LimeLight/issues/29)) ([e509b01](https://github.com/MARYALA29/LimeLight/commit/e509b01f68e1b5965fedd5302c09ce38e75b209d))
+
 ## [0.2.0](https://github.com/MARYALA29/LimeLight/compare/limelight-v0.1.0...limelight-v0.2.0) (2026-05-03)
 
 
