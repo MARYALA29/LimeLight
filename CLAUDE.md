@@ -56,6 +56,26 @@ the threshold.
 - Reusable UI in `src/components/ui/`
 - Feature components in `src/components/{board,projects,tasks}/`
 
+### OpenAPI registry — REQUIRED for any new API surface
+
+LimeLight publishes an OpenAPI 3.1 document at `/api/openapi.json`
+(rendered for humans at `/docs`). The document is generated at runtime
+from a single source of truth: `src/lib/openapi/registry.ts`, which
+imports the Zod validators from `src/lib/validations.ts` and registers
+each route handler under `src/app/api/**/route.ts`.
+
+**Whenever you add or change one of the following, update the registry
+in the same PR:**
+
+- A new Zod schema in `src/lib/validations.ts` → `registry.register(...)`
+- A new `route.ts` under `src/app/api/**` → `registry.registerPath(...)`
+- A change to a request body, query, params, or response shape
+
+A Jest "coverage" test at
+`src/__tests__/lib/openapi/coverage.test.ts` walks `src/app/api` at
+test time and asserts every `route.ts` is registered. Skipping the
+registry update will fail CI.
+
 ### Style Preferences
 
 - **Theme**: Orange color palette (primary: `#F97316`, secondary: `#FB923C`)
