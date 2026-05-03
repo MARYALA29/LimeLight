@@ -137,6 +137,24 @@ npm run test:watch
 npm run test:coverage
 ```
 
+### Coverage threshold (CI gate)
+
+CI runs `npm run test:coverage` on every pull request. The job fails if any of
+the four global metrics (lines, branches, functions, statements) fall below
+the configured threshold. Thresholds live in
+[`jest.config.js`](./jest.config.js) under `coverageThreshold.global`, so the
+same gate fires locally too.
+
+The current threshold is **35%** across all four metrics. This matches the
+project's current baseline and will be ratcheted up toward the long-term
+target of **80%** as more pages and API routes gain test coverage. See issue
+#6 for the ratchet plan.
+
+A coverage summary is posted as a PR comment on every push and updated in
+place by the
+[MishaKav/jest-coverage-comment](https://github.com/MishaKav/jest-coverage-comment)
+action.
+
 ### Test Structure
 
 ```

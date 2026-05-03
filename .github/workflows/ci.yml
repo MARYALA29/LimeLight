@@ -6,8 +6,11 @@ on:
   push:
     branches: [main]
 
+# pull-requests: write is needed by the coverage-comment step below to post
+# the coverage summary on PRs. contents stays read-only.
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -42,8 +45,38 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
-      - name: Test
-        run: npm test -- --ci
+      # Runs jest with --coverage; the coverageThreshold configured in
+      # jest.config.js will fail this step if total line/branch/function/
+      # statement coverage drops below the floor. This is the gate.
+      - name: Test (with coverage)
+        run: npm run test:coverage -- --ci
+
+      # Posts/updates a single PR comment summarising total coverage and
+      # per-file deltas vs the base. Only runs on pull_request events; the
+      # action is a no-op on push to main. Failure here must not fail CI —
+      # the gate above is the source of truth.
+      - name: Coverage PR comment
+        if: github.event_name == 'pull_request'
+        uses: MishaKav/jest-coverage-comment@v1.0.27
+        continue-on-error: true
+        with:
+          coverage-summary-path: ./coverage/coverage-summary.json
+          title: Coverage report
+          summary-title: Total coverage
+          badge-title: coverage
+          hide-comment: false
+          create-new-comment: false
+          remove-links-to-files: false
+          remove-links-to-lines: false
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Build
         run: npm run build

@@ -27,6 +27,15 @@ The TDD workflow:
 - Do not skip tests because "it's a small change"
 - Do not mark a task complete until `npm test` passes
 
+#### Coverage gate (enforced by CI)
+
+CI runs `npm run test:coverage` on every PR. Jest is configured with a global
+`coverageThreshold` in `jest.config.js`, so the build fails (locally and in
+CI) if total **lines / branches / functions / statements** drop below the
+threshold. The long-term target is **80%**; the current floor is **35%** and
+will ratchet up over time. Bias toward writing the tests rather than lowering
+the threshold.
+
 ### Tech Stack Notes
 
 - **Next.js 14** (NOT Next.js 16 — params handling differs)
